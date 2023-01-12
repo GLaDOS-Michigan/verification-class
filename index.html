@@ -1,0 +1,460 @@
+<title>Specification and Verification of Distributed Protocols</title><h1>Specification and Verification of Distributed Protocols</h1><h2>Chapter 01: Dafny Basics</h2>
+This chapter introduces the mathematical subset of Dafny needed to work the exercises in the rest of the course.<p>Lectures
+<ul>
+<li style="list-style-type: none">
+Lecture 1
+<br><a href="lectures/lecture1.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture1-2.png"></div></a>
+<br>
+<a href="lectures/lecture1.pptx">PowerPoint</a>
+<a href="lectures/lecture1.pdf">PDF</a>
+<p>
+<li style="list-style-type: none">
+Lecture 2
+<br><a href="lectures/lecture2.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture2-2.png"></div></a>
+<br>
+<a href="lectures/lecture2.pptx">PowerPoint</a>
+<a href="lectures/lecture2.pdf">PDF</a>
+<p>
+<li style="list-style-type: none">
+Lecture 3
+<br><a href="lectures/lecture3.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture3-2.png"></div></a>
+<br>
+<a href="lectures/lecture3.pptx">PowerPoint</a>
+<a href="lectures/lecture3.pdf">PDF</a>
+<p>
+<li style="list-style-type: none">
+Lecture 4
+<br><a href="lectures/lecture4.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture4-2.png"></div></a>
+<br>
+<a href="lectures/lecture4.pptx">PowerPoint</a>
+<a href="lectures/lecture4.pdf">PDF</a>
+<p>
+</ul>
+<p>Exercises
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise01.dfy"><b>Exercise 01: Lemmas and assertions
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise02.dfy"><b>Exercise 02: Boolean logic
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise03.dfy"><b>Exercise 03: Functions
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise04.dfy"><b>Exercise 04: Predicates
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise05.dfy"><b>Exercise 05: Sets
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise06.dfy"><b>Exercise 06: More set tools
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise07.dfy"><b>Exercise 07: Sequences: Literals, indexing
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise08.dfy"><b>Exercise 08: Sequences: Slices
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise09.dfy"><b>Exercise 09: Sequences: types, cardinality
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise10.dfy"><b>Exercise 10: Type synonyms
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise11.dfy"><b>Exercise 11: Struct (product) datatypes.
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise12.dfy"><b>Exercise 12: include directive and Union (sum) datatypes
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise13.dfy"><b>Exercise 13: More with algebraic datatypes.
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise14.dfy"><b>Exercise 14: Quantifiers
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise15.dfy"><b>Exercise 15: Maps. Set, Map and Sequence comprehensions.
+
+</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise16.dfy"><b>Exercise 16: IsEven
+
+</b></a> Hoare logic
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise17.dfy"><b>Exercise 17: Fibo
+
+</b></a> Recursion challenge.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise18.dfy"><b>Exercise 18: FindMax
+
+</b></a> Loop invariants.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise19.dfy"><b>Exercise 19: IsSeqSorted
+
+</b></a> Build an entire imperative loop method implementation with loop
+
+invariants.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise20.dfy"><b>Exercise 20: Binary Search
+
+</b></a> Method implementation; writing a Hoare spec.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise21.dfy"><b>Exercise 21: Binary Tree Is Sorted
+
+</b></a> Prove an implementation meets its spec.
+
+Practice with proof diagnosis.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/exercise22.dfy"><b>Exercise 22: Binary Tree Search
+
+</b></a> Implement search in a binary tree and prove it works.
+
+Practice with proof diagnosis.
+
+
+</ul>
+<p>Associated Libraries
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/DirectionsLibrary.dfy"><b>DirectionsLibrary.dfy</b></a> Library for exercises 12 & 14
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/LunchLibrary.dfy"><b>LunchLibrary.dfy</b></a> Library for exercises 13 & 14
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter01-basics/exercises/UtilitiesLibrary.dfy"><b>UtilitiesLibrary.dfy</b></a> 
+</ul>
+<h2>Chapter 02: Specification</h2>
+Specification is how we write down what a protocol does. A verification result is only as good as its specification.<p>Lectures
+<ul>
+<li style="list-style-type: none">
+Lecture 5
+<br><a href="lectures/lecture5.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture5-2.png"></div></a>
+<br>
+<a href="lectures/lecture5.pptx">PowerPoint</a>
+<a href="lectures/lecture5.pdf">PDF</a>
+<p>
+</ul>
+<p>Exercises
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter02-specification/exercises/exercise01.dfy"><b>Exercise 01: IsPrime I
+
+</b></a> Basic specification.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter02-specification/exercises/exercise02.dfy"><b>Exercise 02: IsPrime II
+
+</b></a> Working with an implementation proof
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter02-specification/exercises/exercise03b.dfy"><b>Merge Sort
+
+</b></a> More specification practice.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter02-specification/exercises/exercise03a.dfy"><b>Merge Sort
+
+</b></a> More specification practice.
+
+
+</ul>
+<h2>Chapter 03: State Machines</h2>
+This chapter describes state machine models, a general tool we'll use to describe protocols and the environment they work in.<p>Lectures
+<ul>
+<li style="list-style-type: none">
+Lecture 6
+<br><a href="lectures/lecture6.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture6-2.png"></div></a>
+<br>
+<a href="lectures/lecture6.pptx">PowerPoint</a>
+<a href="lectures/lecture6.pdf">PDF</a>
+<p>
+<li style="list-style-type: none">
+Lecture 7
+<br><a href="lectures/lecture7.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture7-2.png"></div></a>
+<br>
+<a href="lectures/lecture7.pptx">PowerPoint</a>
+<a href="lectures/lecture7.pdf">PDF</a>
+<p>
+</ul>
+<p>Exercises
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter03-state-machines/exercises/exercise01.dfy"><b>Exercise 01: Coke Machine
+
+</b></a> The first state machine specification exercise: fill in actions.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter03-state-machines/exercises/exercise02.dfy"><b>Exercise 02: Dining Philosophers
+
+</b></a> A more challenging state machine: define the state datatype.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter03-state-machines/exercises/exercise03.dfy"><b>Exercise 03: Single-Server Lock Service Model
+
+</b></a> A complex state machine
+
+including a Safety predicate on the state type.
+
+
+</ul>
+<h2>Chapter 04: Invariants</h2>
+Invariants are the central tool used to prove safety properties of protocols.<p>Lectures
+<ul>
+<li style="list-style-type: none">
+Lecture 8
+<br><a href="lectures/lecture8.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture8-2.png"></div></a>
+<br>
+<a href="lectures/lecture8.pptx">PowerPoint</a>
+<a href="lectures/lecture8.pdf">PDF</a>
+<p>
+<li style="list-style-type: none">
+Lecture 9
+<br><a href="lectures/lecture9.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture9-2.png"></div></a>
+<br>
+<a href="lectures/lecture9.pptx">PowerPoint</a>
+<a href="lectures/lecture9.pdf">PDF</a>
+<p>
+</ul>
+<p>Exercises
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter04-invariants/exercises/exercise01.dfy"><b>Exercise 01: Crawler
+
+</b></a> Introduction to inductive invariants
+
+-- implement the visualization from the lecture.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter04-invariants/exercises/exercise02.dfy"><b>Exercise 02: Single-Server Lock Service Proof
+
+</b></a> A more realistic invariant proof of the previous chapter's lock
+
+service.
+
+
+</ul>
+<h2>Chapter 05: Distributed State Machines</h2>
+Here we assemble state machines in an idiomatic way to represent a protocol and the environment the protocol operates in.<p>Lectures
+<ul>
+<li style="list-style-type: none">
+Lecture 10
+<br><a href="lectures/lecture10.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture10-2.png"></div></a>
+<br>
+<a href="lectures/lecture10.pptx">PowerPoint</a>
+<a href="lectures/lecture10.pdf">PDF</a>
+<p>
+<li style="list-style-type: none">
+Lecture 11
+<br><a href="lectures/lecture11.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture11-2.png"></div></a>
+<br>
+<a href="lectures/lecture11.pptx">PowerPoint</a>
+<a href="lectures/lecture11.pdf">PDF</a>
+<p>
+<li style="list-style-type: none">
+Lecture 12
+<br><a href="lectures/lecture12.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture12-2.png"></div></a>
+<br>
+<a href="lectures/lecture12.pptx">PowerPoint</a>
+<a href="lectures/lecture12.pdf">PDF</a>
+<p>
+</ul>
+<p>Exercises
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter05-distributed-state-machines/exercises/CommitTypes.dfy"><b>CommitTypes.template</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter05-distributed-state-machines/exercises/exercise01.dfy"><b>Exercise 01: Two Phase Commit Model
+
+</b></a> Model a distributed protocol using compound state machines.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter05-distributed-state-machines/exercises/exercise02.dfy"><b>Exercise 02: Two Phase Commit Safety Specification Predicate
+
+</b></a> Express the English Atomic Commit safety properties as predicates
+
+over the compound state machine model from exercise01.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter05-distributed-state-machines/exercises/exercise03.dfy"><b>Exercise 03: Two Phase Commit Safety Proof
+
+</b></a> Prove that the 2PC distributed system (from exercise01) accomplishes the Safety spec (from exercise02)
+
+
+</ul>
+<p>Associated Libraries
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter05-distributed-state-machines/exercises/UtilitiesLibrary.dfy"><b>UtilitiesLibrary.dfy</b></a> 
+</ul>
+<h2>Project 01: Distributed Lock Server</h2>
+This midterm project demonstrates mastery of the concepts in chapters 1—5.<p>Lectures
+<ul>
+</ul>
+<p>Exercises
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/project01-distributed-lock-server/exercises/distributed_system.t.dfy"><b>DistributedSystem
+
+</b></a> This file isn't editable because it's a trusted file that specifies how
+
+hosts interact with one another over the network.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/project01-distributed-lock-server/exercises/exercise01.dfy"><b>Exercise 01: Midterm Project
+
+</b></a> Build a distributed lock server. Define how a host implements your
+
+protocol in host.v.dfy; write your safety spec and proof here.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/project01-distributed-lock-server/exercises/host.v.dfy"><b>Host protocol
+
+</b></a> Define the host state machine here: message type, state machine for executing one
+
+host's part of the protocol.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/project01-distributed-lock-server/exercises/network.t.dfy"><b>Network
+
+</b></a> This file isn't editable because it's a trusted file that specifies how
+
+the network delivers packets, allowing reorder and duplicate delivery.
+
+
+</ul>
+<p>Associated Libraries
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/project01-distributed-lock-server/exercises/UtilitiesLibrary.dfy"><b>UtilitiesLibrary.dfy</b></a> 
+</ul>
+<h2>Chapter 06: Refinement</h2>
+Refinement helps us write a specification that abstracts away the implementation details of the protocol.<p>Lectures
+<ul>
+<li style="list-style-type: none">
+Lecture 13
+<br><a href="lectures/lecture13.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture13-2.png"></div></a>
+<br>
+<a href="lectures/lecture13.pptx">PowerPoint</a>
+<a href="lectures/lecture13.pdf">PDF</a>
+<p>
+</ul>
+<p>Exercises
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter06-refinement/exercises/ch06exercise01.dfy"><b>Exercise 01: Sharded KV Store with Synchronous Communication
+
+</b></a> Build a refinement from a protocol (distributed sharded state) to
+
+a specification (a logically-centralized abstract map).
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter06-refinement/exercises/ch06exercise02.dfy"><b>Exercise 02: State Machine Spec for Atomic Commit
+
+</b></a> Build an abstract behavioral model that captures the
+
+semantics of an evolving system to use as a refinement
+
+reference for its more-complicated implementation.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter06-refinement/exercises/ch06exercise03.dfy"><b>Exercise 03: Property Lemmas for Atomic Commit
+
+</b></a> The state machine model captures AC2 nicely,
+
+but let's make it very clear that the model also obeys
+
+AC1, AC3 and AC4.
+
+
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter06-refinement/exercises/ch06exercise04.dfy"><b>Exercise 04: Refinement proof for 2PC
+
+</b></a> Show that Two Phase Commit refines the Atomic Commit sate machine spec.
+
+
+</ul>
+<p>Associated Libraries
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter06-refinement/exercises/UtilitiesLibrary.dfy"><b>UtilitiesLibrary.dfy</b></a> 
+</ul>
+<h2>Chapter 07: Asynchronous Clients</h2>
+Most specifications want to capture the idea of <i>linearizability</i>: that clients care about when their interactions happen in real time. This chapter develops a general technique for encoding this constraint into a specification.<p>Lectures
+<ul>
+<li style="list-style-type: none">
+Lecture 14
+<br><a href="lectures/lecture14.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture14-2.png"></div></a>
+<br>
+<a href="lectures/lecture14.pptx">PowerPoint</a>
+<a href="lectures/lecture14.pdf">PDF</a>
+<p>
+</ul>
+<p>Exercises
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter07-async-clients/exercises/exercise01.dfy"><b>Exercise 01: KV Spec with Asynchronous Client Interface
+
+</b></a> Modify the KV spec to encode asynchronous client requests.
+
+
+</ul>
+<p>Associated Libraries
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter07-async-clients/exercises/UtilitiesLibrary.dfy"><b>UtilitiesLibrary.dfy</b></a> 
+</ul>
+<h2>Chapter 08: Application Correspondence</h2>
+A refinement proof is meaningless if the verification engineer can hide real behavior behind a meaningless refinement abstraction function. This chapter develops a general technique for establishing a specification that prevents such flaws.<p>Lectures
+<ul>
+<li style="list-style-type: none">
+Lecture 15
+<br><a href="lectures/lecture15.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture15-2.png"></div></a>
+<br>
+<a href="lectures/lecture15.pptx">PowerPoint</a>
+<a href="lectures/lecture15.pdf">PDF</a>
+<p>
+</ul>
+<p>Exercises
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter08-application-correspondence/exercises/exercise01.dfy"><b>Exercise 01: Sharded Producer Consumer
+
+</b></a> How do we prevent a nonsense refinement theorem? For example, suppose the
+
+protocol-level state machine allows arbitrary behavior, but the refinement
+
+abstraction function maps every protocol-level state to the initial spec state,
+
+so it can refine to a bunch of stutter steps?
+
+
+</ul>
+<p>Associated Libraries
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/chapter08-application-correspondence/exercises/UtilitiesLibrary.dfy"><b>UtilitiesLibrary.dfy</b></a> 
+</ul>
+<h2>Project 02: Sharded Key-Value Store</h2>
+This final project demonstrates mastery of the concepts in chapters 1—8.<p>Lectures
+<ul>
+</ul>
+<p>Exercises
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/project02-sharded-kv-store/exercises/AsyncKVSpec.t.dfy"><b>AsyncKVSpec.t.template</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/project02-sharded-kv-store/exercises/AtomicKV.t.dfy"><b>AtomicKV.t.template</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/project02-sharded-kv-store/exercises/DistributedSystem.t.dfy"><b>DistributedSystem.t.template</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/project02-sharded-kv-store/exercises/EventSequenceRecorder.t.dfy"><b>EventSequenceRecorder.t.template</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/project02-sharded-kv-store/exercises/Host.v.dfy"><b>Host.v.template</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/project02-sharded-kv-store/exercises/MessageType.v.dfy"><b>MessageType.v.template</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/project02-sharded-kv-store/exercises/Network.t.dfy"><b>Network.t.template</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/project02-sharded-kv-store/exercises/RefinementObligation.t.dfy"><b>RefinementObligation.t.template</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/project02-sharded-kv-store/exercises/RefinementProof.v.dfy"><b>RefinementProof.v.template</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/project02-sharded-kv-store/exercises/Types.t.dfy"><b>Types.t.template</b></a> 
+</ul>
+<p>Associated Libraries
+<ul>
+<li><a href="/home/jonh/verification-course/tools/../publish/project02-sharded-kv-store/exercises/IMapHelpers.t.dfy"><b>IMapHelpers.t.dfy</b></a> 
+<li><a href="/home/jonh/verification-course/tools/../publish/project02-sharded-kv-store/exercises/UtilitiesLibrary.t.dfy"><b>UtilitiesLibrary.t.dfy</b></a> 
+</ul>
+<h2>Auxiliary Material: </h2>
+<p>Lectures
+<ul>
+<li style="list-style-type: none">
+Lecture 16
+<br><a href="lectures/lecture16.pdf"><div style="display: inline-block; border:2px solid black;width: 300px; height:180px; margin: auto"><img width=100% height=100% src="lectures/lecture16-2.png"></div></a>
+<br>
+<a href="lectures/lecture16.pptx">PowerPoint</a>
+<a href="lectures/lecture16.pdf">PDF</a>
+<p>
+</ul>
