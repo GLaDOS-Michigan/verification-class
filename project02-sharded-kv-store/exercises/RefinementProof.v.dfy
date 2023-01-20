@@ -132,21 +132,14 @@ module RefinementProof refines RefinementObligation {
     requires OwnerDefinesKey(maps, owner, key)
     ensures key in DisjointMapUnion(maps)
   {
-    if ArbitraryOwner(maps) != owner {
-      DisjointMapsDoContainKey(MapRemoveOne(maps, ArbitraryOwner(maps)), owner, key);
-    }
   }
 
   lemma DisjointMapsDontContainKey(maps: PartitionsByOwner, key:int)
     requires forall owner :: owner in maps ==> key !in maps[owner]
     ensures key !in DisjointMapUnion(maps)
   {
-    if maps != map[] {
-      DisjointMapsDontContainKey(MapRemoveOne(maps, ArbitraryOwner(maps)), key);
-    }
   }
 
-  // TODO Try naming body instead of opaquing
   predicate {:opaque} IsDisjoint(maps: PartitionsByOwner)
   {
     forall src1, src2
@@ -251,7 +244,7 @@ module RefinementProof refines RefinementObligation {
 /*}*/
     }
 
-    function TransferMaps() : PartitionsByOwner
+    function MessageMaps() : PartitionsByOwner
     {
 /*{*/
       // Replace with a map whose keys are all of the MessageOwners alive in
@@ -270,11 +263,11 @@ module RefinementProof refines RefinementObligation {
     {
       // The map comprehension in MapUnionPreferLeft seems to lead to timeout grief
       // that's hard to profile, so this is opaque.
-      MapUnionPreferLeft(HostMaps(), TransferMaps())
+      MapUnionPreferLeft(HostMaps(), MessageMaps())
     }
 
-    // If we don't touch *anything* in the client tables or network, it's a
-    // shame to do a bunch of work proving I() is the same key-by-key. Instead
+    // If we don't touch *anything* in the client tables or network, it's a shame to 
+    // do a bunch of work proving VariablesAbstraction() is the same key-by-key. Instead
     // we just peek under the covers and see that AllPartitions() only looks at the
     // tables part of the hosts; changes to DistributedSystem.events don't affect it.
     lemma NoopPreservesSpecView(v': Variables)
