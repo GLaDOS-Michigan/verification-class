@@ -1,4 +1,4 @@
-//#title Merge Sort
+//#title Merge Sort (a)
 //#desc More specification practice.
 
 // Implement a merge sort that guarantees the result is sorted.
