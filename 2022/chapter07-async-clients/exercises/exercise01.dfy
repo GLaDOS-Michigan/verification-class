@@ -21,16 +21,16 @@ include "UtilitiesLibrary.dfy"
 module Types {
   type Key = string
 
-  function AllKeys() : set<Key>
+  ghost function AllKeys() : set<Key>
   {
     { "cat", "dog", "bird", "elephant" }
   }
 
   type Value = int
 
-  function DefaultValue() : Value { 0 }
+  ghost function DefaultValue() : Value { 0 }
 
-  function InitialMap() : map<Key, Value>
+  ghost function InitialMap() : map<Key, Value>
   {
     map key | key in AllKeys() :: DefaultValue()
   }
@@ -64,7 +64,7 @@ module MapSpec {
   datatype Variables = Variables(mapp:map<Key, Value>,
     requests:set<Input>, replies:set<Output>)
 
-  predicate Init(v: Variables)
+  ghost predicate Init(v: Variables)
   {
     && v.mapp == InitialMap()
 /*{*/
@@ -72,28 +72,28 @@ module MapSpec {
 /*}*/
   }
 
-  predicate AcceptRequest(v:Variables, v':Variables, request: Input)
+  ghost predicate AcceptRequest(v:Variables, v':Variables, request: Input)
   {
 /*{*/
     false // Define this predicate
 /*}*/
   }
 
-  predicate DeliverReply(v:Variables, v':Variables, reply: Output)
+  ghost predicate DeliverReply(v:Variables, v':Variables, reply: Output)
   {
 /*{*/
     false // Define this predicate
 /*}*/
   }
 
-  predicate InsertOp(v:Variables, v':Variables, request: Input)
+  ghost predicate InsertOp(v:Variables, v':Variables, request: Input)
   {
 /*{*/
     false // Replace me. Reference InsertOp from exercise 1 in chapter 6.
 /*}*/
   }
 
-  predicate QueryOp(v:Variables, v':Variables, request: Input, output: Value)
+  ghost predicate QueryOp(v:Variables, v':Variables, request: Input, output: Value)
   {
 /*{*/
     false // Replace me. Reference QueryOp from exercise 1 in chapter 6.
@@ -107,7 +107,7 @@ module MapSpec {
     | QueryOpStep(request:Input, output:Value)
     | NoOpStep()
 
-  predicate NextStep(v: Variables, v': Variables, step:Step)
+  ghost predicate NextStep(v: Variables, v': Variables, step:Step)
   {
     match step
       case AcceptRequestStep(request) => AcceptRequest(v, v', request)
@@ -117,7 +117,7 @@ module MapSpec {
       case NoOpStep => v' == v
   }
 
-  predicate Next(v: Variables, v': Variables)
+  ghost predicate Next(v: Variables, v': Variables)
   {
     exists step :: NextStep(v, v', step)
   }
@@ -129,7 +129,7 @@ module MapSpec {
 
   // We'll materialize behaviors explicitly (as a sequence of states) so we can
   // goof around with proofs about what this spec might say.
-  predicate ValidBehavior(execution:seq<Variables>, steps:seq<Step>)
+  ghost predicate ValidBehavior(execution:seq<Variables>, steps:seq<Step>)
   {
     && |execution| == |steps| + 1
     && Init(execution[0])

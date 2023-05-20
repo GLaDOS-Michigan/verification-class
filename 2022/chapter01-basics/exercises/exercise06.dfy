@@ -1,7 +1,7 @@
 //#title More set tools
 
 // <= on sets is subset.
-predicate HasFourFiveSix(intset:set<int>)
+ghost predicate HasFourFiveSix(intset:set<int>)
 {
   {6,5,4} <= intset  // I can because they're sets!
 }

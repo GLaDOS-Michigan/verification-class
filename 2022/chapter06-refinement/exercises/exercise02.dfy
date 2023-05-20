@@ -27,6 +27,47 @@ module Obligations {
   import opened DistributedSystem
 
 /*{*/
+  // Here are some handy accessor functions for dereferencing the coordinator
+  // and the participants out of the sequence in Hosts.
+  ghost function CoordinatorConstants(c: Constants) : CoordinatorHost.Constants
+    requires c.WF()
+  {
+    Last(c.hosts).coordinator
+  }
+
+  ghost function CoordinatorVars(c: Constants, v: Variables) : CoordinatorHost.Variables
+    requires v.WF(c)
+  {
+    Last(v.hosts).coordinator
+  }
+
+  ghost predicate ValidParticipantId(c: Constants, hostid: HostId)
+  {
+    hostid < |c.hosts|-1
+  }
+
+  ghost function ParticipantConstants(c: Constants, hostid: HostId) : ParticipantHost.Constants
+    requires c.WF()
+    requires ValidParticipantId(c, hostid)
+  {
+    c.hosts[hostid].participant
+  }
+
+  ghost function ParticipantVars(c: Constants, v: Variables, hostid: HostId) : ParticipantHost.Variables
+    requires v.WF(c)
+    requires ValidParticipantId(c, hostid)
+  {
+    v.hosts[hostid].participant
+  }
+
+  ghost predicate AllWithDecisionAgreeWithThisOne(c: Constants, v: Variables, decision: Decision)
+    requires v.WF(c)
+  {
+    && (CoordinatorVars(c, v).decision.Some? ==> CoordinatorVars(c, v).decision.value == decision)
+    && (forall hostid:HostId
+      | ValidParticipantId(c, hostid) && ParticipantVars(c, v, hostid).decision.Some?
+      :: ParticipantVars(c, v, hostid).decision.value == decision)
+  }
 /*}*/
 
   // AC-1: All processes that reach a decision reach the same one.
@@ -35,7 +76,10 @@ module Obligations {
   {
     // All hosts that reach a decision reach the same one
 /*{*/
-    true // Replace me
+    // HAND-GRADE
+    // All hosts that reach a decision reach the same one
+    || AllWithDecisionAgreeWithThisOne(c, v, Commit)
+    || AllWithDecisionAgreeWithThisOne(c, v, Abort)
 /*}*/
   }
 
@@ -46,7 +90,12 @@ module Obligations {
     requires v.WF(c)
   {
 /*{*/
-    true // Replace me
+    // HAND-GRADE
+    // Any host with a No preference forces an abort.
+    (exists hostid:HostId ::
+        && ValidParticipantId(c, hostid)
+        && ParticipantConstants(c, hostid).preference.No?)
+    ==> AllWithDecisionAgreeWithThisOne(c, v, Abort)
 /*}*/
   }
 
@@ -55,7 +104,10 @@ module Obligations {
     requires v.WF(c)
   {
 /*{*/
-    true // Replace me
+    // HAND-GRADE
+    // If every host has a Yes preference we must commit.
+    (forall hostid:HostId | ValidParticipantId(c, hostid) :: ParticipantConstants(c, hostid).preference.Yes?)
+      ==> AllWithDecisionAgreeWithThisOne(c, v, Commit)
 /*}*/
   }
 

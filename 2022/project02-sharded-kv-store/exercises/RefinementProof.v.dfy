@@ -4,12 +4,11 @@ include "RefinementObligation.t.dfy"
 module RefinementProof refines RefinementObligation {
   import opened IMapHelpers
   import opened MessageType
-  import AtomicKV
 
-  function ConstantsAbstraction(c: Constants) : AsyncKVSpec.Constants
+  ghost function ConstantsAbstraction(c: Constants) : AtomicKVSpec.Constants
   {
 /*{*/
-    var result:AsyncKVSpec.Constants :| true; result  // Replace with your definition
+    var result:AtomicKVSpec.Constants :| true; result  // Replace with your definition
 /*}*/
   }
 
@@ -89,13 +88,13 @@ module RefinementProof refines RefinementObligation {
   // Fullness definitions
   //////////////////////////////////////////////////////////////////
 
-  predicate OwnerDefinesKey(maps: PartitionsByOwner, owner: MapOwner, key: int)
+  ghost predicate OwnerDefinesKey(maps: PartitionsByOwner, owner: MapOwner, key: int)
   {
     && owner in maps
     && key in maps[owner]
   }
 
-  predicate SomeOwnerDefinesKey(maps: PartitionsByOwner, key: int)
+  ghost predicate SomeOwnerDefinesKey(maps: PartitionsByOwner, key: int)
   {
     exists owner :: OwnerDefinesKey(maps, owner, key)
   }
@@ -103,7 +102,7 @@ module RefinementProof refines RefinementObligation {
   // Define "fullness": every key is defined in a map belonging to some owner.
   // (forall-exists puts Dafny in a bad mood, so we break this into separate
   // named definitions.)
-  predicate IsFullPartitions(maps: PartitionsByOwner)
+  ghost predicate IsFullPartitions(maps: PartitionsByOwner)
   {
     forall key :: SomeOwnerDefinesKey(maps, key)
   }
@@ -113,13 +112,13 @@ module RefinementProof refines RefinementObligation {
   //////////////////////////////////////////////////////////////////
 
   // Dafny's :| should be deterministic (functional), but it ain't.
-  function ArbitraryOwner(maps: PartitionsByOwner) : MapOwner
+  ghost function ArbitraryOwner(maps: PartitionsByOwner) : MapOwner
     requires maps != map[]
   {
     var owner :| owner in maps; owner
   }
 
-  function DisjointMapUnion(maps: PartitionsByOwner) : imap<int,int>
+  ghost function DisjointMapUnion(maps: PartitionsByOwner) : imap<int,int>
   {
     if maps == map[]
     then EmptyMap()
@@ -140,7 +139,7 @@ module RefinementProof refines RefinementObligation {
   {
   }
 
-  predicate {:opaque} IsDisjoint(maps: PartitionsByOwner)
+  ghost predicate {:opaque} IsDisjoint(maps: PartitionsByOwner)
   {
     forall src1, src2
       | src1 in maps && src2 in maps && src1 != src2
@@ -177,7 +176,7 @@ module RefinementProof refines RefinementObligation {
   // Raw layer
   // ---------
 
-  predicate RawOwnerClaimsKey(c: Constants, v: Variables, owner: MapOwner, key: int)
+  ghost predicate RawOwnerClaimsKey(c: Constants, v: Variables, owner: MapOwner, key: int)
   {
     && v.WF(c)
     && (match owner
@@ -197,7 +196,7 @@ module RefinementProof refines RefinementObligation {
       )
   }
 
-  predicate RawOwnerAssignsValue(c: Constants, v: Variables, owner: MapOwner, key: int, value: int)
+  ghost predicate RawOwnerAssignsValue(c: Constants, v: Variables, owner: MapOwner, key: int, value: int)
   {
     && RawOwnerClaimsKey(c, v, owner, key)
     && (match owner
@@ -225,7 +224,7 @@ module RefinementProof refines RefinementObligation {
     // Things you can learn with merely v.WF(c)
     //////////////////////////////////////////////////////////////////
 
-    function ValidHosts() : set<HostId>  // Here to satiate finite-set heuristic
+    ghost function ValidHosts() : set<HostId>  // Here to satiate finite-set heuristic
     {
 /*{*/
       {}    // Construct a set comprehension that identifies the valid host ids as a finite set.
@@ -234,7 +233,7 @@ module RefinementProof refines RefinementObligation {
 
     // Build up the AllPartitions() map that talks about *both* host and message ownership
 
-    function HostMaps() : PartitionsByOwner
+    ghost function HostMaps() : PartitionsByOwner
       requires v.WF(c)
     {
 /*{*/
@@ -244,7 +243,7 @@ module RefinementProof refines RefinementObligation {
 /*}*/
     }
 
-    function MessageMaps() : PartitionsByOwner
+    ghost function MessageMaps() : PartitionsByOwner
     {
 /*{*/
       // Replace with a map whose keys are all of the MessageOwners alive in
@@ -258,7 +257,7 @@ module RefinementProof refines RefinementObligation {
     // everything in it (when this PartitionLayer object is full and disjoint).
     // It crams together everything we learned from the hosts and the in-flight messages
     // into a single map.
-    function {:opaque} AllPartitions() : PartitionsByOwner
+    ghost function {:opaque} AllPartitions() : PartitionsByOwner
       requires v.WF(c)
     {
       // The map comprehension in MapUnionPreferLeft seems to lead to timeout grief
@@ -282,7 +281,7 @@ module RefinementProof refines RefinementObligation {
       reveal_AllPartitions();
     }
 
-    predicate PartitionOwnerClaimsKey(owner: MapOwner, key: int)
+    ghost predicate PartitionOwnerClaimsKey(owner: MapOwner, key: int)
     {
       && v.WF(c)
       && owner in AllPartitions()
@@ -308,7 +307,7 @@ module RefinementProof refines RefinementObligation {
     // owner claiming it)
     //////////////////////////////////////////////////////////////////
 
-    predicate PartitionIsFull() {
+    ghost predicate PartitionIsFull() {
       && v.WF(c)
       && IsFullPartitions(AllPartitions())
     }
@@ -329,7 +328,7 @@ module RefinementProof refines RefinementObligation {
     // AllPartitions.
     //////////////////////////////////////////////////////////////////
 
-    predicate IsFullAndDisjoint() {
+    ghost predicate IsFullAndDisjoint() {
       && v.WF(c)
       && PartitionIsFull()
       && IsDisjoint(AllPartitions())
@@ -337,7 +336,7 @@ module RefinementProof refines RefinementObligation {
 
     // Here's a key-granularity definition of disjointness.
     // Prove it to EstablishDisjointness().
-    predicate KeysOwnedDisjointly() {
+    ghost predicate KeysOwnedDisjointly() {
       forall key, owner1, owner2 | PartitionOwnerClaimsKey(owner1, key) && PartitionOwnerClaimsKey(owner2, key) :: owner1 == owner2
     }
 
@@ -378,7 +377,7 @@ module RefinementProof refines RefinementObligation {
 
     // This SpecView() is the "top" layer: the union of all the partitions into one flat k-v map
     // This is the global view, used for the abstraction function.
-    function SpecView() : imap<int,int>
+    ghost function SpecView() : imap<int,int>
       requires IsFullAndDisjoint()
       ensures IsFull(SpecView())
     {
@@ -386,13 +385,13 @@ module RefinementProof refines RefinementObligation {
       DisjointMapUnion(AllPartitions())
     }
 
-    predicate OwnerAssignsValue(owner: MapOwner, key: int, value: int)
+    ghost predicate OwnerAssignsValue(owner: MapOwner, key: int, value: int)
     {
       && PartitionOwnerClaimsKey(owner, key)
       && AllPartitions()[owner][key] == value
     }
 
-    function Value(key: int) : int
+    ghost function Value(key: int) : int
       requires IsFullAndDisjoint()
     {
       SpecView()[key]
@@ -447,17 +446,17 @@ module RefinementProof refines RefinementObligation {
 
   ////////////////////////////////////////////////////////////////////////////
 
-  function VariablesAbstraction(c: Constants, v: Variables) : AsyncKVSpec.Variables
+  ghost function VariablesAbstraction(c: Constants, v: Variables) : AtomicKVSpec.Variables
   {
 /*{*/
-    var result:AsyncKVSpec.Variables :| true; result  // Replace with your definition
+    var result:AtomicKVSpec.Variables :| true; result  // Replace with your definition
 /*}*/
   }
 
 /*{*/
 /*}*/
 
-  predicate Inv(c: Constants, v: Variables)
+  ghost predicate Inv(c: Constants, v: Variables)
   {
 /*{*/
     true // supply your invariant
@@ -470,7 +469,7 @@ module RefinementProof refines RefinementObligation {
   lemma RefinementInit(c: Constants, v: Variables)
     //requires Init(c, v) // inherited from abstract module
     ensures Inv(c, v)
-    ensures AsyncKVSpec.Init(ConstantsAbstraction(c), VariablesAbstraction(c, v))
+    ensures AtomicKVSpec.Init(ConstantsAbstraction(c), VariablesAbstraction(c, v))
   {
 /*{*/
 /*}*/
@@ -485,7 +484,7 @@ module RefinementProof refines RefinementObligation {
     // requires Next(c, v, v')
     // requires Inv(c, v)
     ensures Inv(c, v')
-    ensures AsyncKVSpec.Next(ConstantsAbstraction(c), VariablesAbstraction(c, v), VariablesAbstraction(c, v'), event)
+    ensures AtomicKVSpec.Next(ConstantsAbstraction(c), VariablesAbstraction(c, v), VariablesAbstraction(c, v'), event)
   {
 /*{*/
 /*}*/

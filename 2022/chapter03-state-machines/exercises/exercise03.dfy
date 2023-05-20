@@ -4,18 +4,18 @@
 
 // Model a lock service that consists of a single server and an
 // arbitrary number of clients.
-// 
+//
 // The state of the system includes the server's state (whether the server
 // knows that some client holds the lock, and if so which one)
 // and the clients' states (for each client, whether that client knows
 // it holds the lock).
-// 
+//
 // The system should begin with the server holding the lock.
 // An acquire step atomically transfers the lock from the server to some client.
 // (Note that we're not modeling the network yet -- the lock disappears from
 // the server and appears at a client in a single atomic transition.)
 // A release step atomically transfers the lock from the client back to the server.
-// 
+//
 // The safety property is that no two clients ever hold the lock
 // simultaneously.
 
@@ -23,7 +23,7 @@ datatype Constants = Constants(
 /*{*/ // You define this ...
 /*}*/
 ) {
-  predicate WellFormed() { true }
+  ghost predicate WellFormed() { true }
 /*{*/
 /*}*/
 }
@@ -35,14 +35,14 @@ datatype Variables = Variables(
 /*{*/ // You define this ...
 /*}*/
 ) {
-  predicate WellFormed(c: Constants) {
+  ghost predicate WellFormed(c: Constants) {
 /*{*/
     true
 /*}*/
   }
 }
 
-predicate Init(c:Constants, v:Variables) {
+ghost predicate Init(c:Constants, v:Variables) {
   && v.WellFormed(c)
 /*{*/
   && true  // Replace me
@@ -58,21 +58,21 @@ datatype Step =
   | SomeStep(somearg: int)   // Replace me
 /*}*/
 
-predicate NextStep(c:Constants, v:Variables, v':Variables, step: Step) {
+ghost predicate NextStep(c:Constants, v:Variables, v':Variables, step: Step) {
   match step
 /*{*/
   case SomeStep(somearg) => false  // Replace me
 /*}*/
 }
 
-predicate Next(c:Constants, v:Variables, v':Variables) {
+ghost predicate Next(c:Constants, v:Variables, v':Variables) {
   exists step :: NextStep(c, v, v', step)
 }
 
 // A good definition of safety for the lock server is that no two clients
 // may hold the lock simultaneously. This predicate should capture that
 // idea in terms of the Variables you have defined.
-predicate Safety(c:Constants, v:Variables) {
+ghost predicate Safety(c:Constants, v:Variables) {
 /*{*/
   false  // Replace me
 /*}*/
@@ -83,7 +83,7 @@ predicate Safety(c:Constants, v:Variables) {
 // has the lock acquired.
 // Since you defined the Variables state, you must define this predicate in
 // those terms.
-predicate ClientHoldsLock(c: Constants, v: Variables, clientIndex: nat)
+ghost predicate ClientHoldsLock(c: Constants, v: Variables, clientIndex: nat)
   requires v.WellFormed(c)
 {
 /*{*/

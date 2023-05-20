@@ -7,12 +7,12 @@ include "UtilitiesLibrary.dfy"
 module HostIdentifiers {
   type HostId = int // Pretty type synonym (a la C typedef)
 
-  predicate ValidHostId(numHosts: nat, hostid: HostId) {
+  ghost predicate ValidHostId(numHosts: nat, hostid: HostId) {
     0 <= hostid < numHosts
   }
 
   // The set of all host identities.
-  function AllHosts(numHosts: nat) : set<HostId> {
+  ghost function AllHosts(numHosts: nat) : set<HostId> {
     set hostid:HostId |
       && 0 <= hostid < numHosts // This line is entirely redundant, but it satisfies Dafny's finite-set heuristic; see chapter01 exercise15
       && ValidHostId(numHosts, hostid)
@@ -34,7 +34,7 @@ module Network {
 
   datatype Constants = Constants(numHosts: nat)
   {
-    predicate Configure(numHosts: nat) {
+    ghost predicate Configure(numHosts: nat) {
       this.numHosts == numHosts
     }
   }
@@ -45,12 +45,12 @@ module Network {
   // also doubles as how multiple parties can hear the message.)
   datatype Variables<Message> = Variables(sentMsgs:set<Message>)
 
-  predicate Init<Message>(c: Constants, v: Variables<Message>)
+  ghost predicate Init<Message>(c: Constants, v: Variables<Message>)
   {
     && v.sentMsgs == {}
   }
 
-  predicate Next<Message>(c: Constants, v: Variables, v': Variables, msgOps: MessageOps)
+  ghost predicate Next<Message>(c: Constants, v: Variables, v': Variables, msgOps: MessageOps)
   {
     // Only allow receipt of a message if we've seen it has been sent.
     && (msgOps.recv.Some? ==> msgOps.recv.value in v.sentMsgs)

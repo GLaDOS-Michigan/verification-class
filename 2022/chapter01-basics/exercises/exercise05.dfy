@@ -2,7 +2,7 @@
 
 // This predicate takes a set of integers as an argument.
 // set<T> is a built-in templated type.
-predicate HasSevenAndNotNine(intset:set<int>)
+ghost predicate HasSevenAndNotNine(intset:set<int>)
 {
   7 in intset && 9 !in intset
 }

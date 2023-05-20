@@ -1,7 +1,7 @@
 //#title Fibo
 //#desc Recursion challenge.
 
-function method fibo(val:nat) : nat
+ghost function fibo(val:nat) : nat
 {
 /*{*/
   0

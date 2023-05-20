@@ -7,7 +7,7 @@
 // Second, the hosts can communicate only via asynchronous messages; a single
 // state machine transition cannot simultaneously read or update the state of
 // two hosts.
-// 
+//
 // To guard against duplicate messages, the nodes associate a monotonically
 // increasing epoch number with the lock. Initially, node 0 holds the lock and
 // its epoch number is 1, while all other nodes with an epoch of 0 (and not
@@ -15,11 +15,11 @@
 // node by sending them a “Grant” message which has an epoch number that is
 // greater than the node's epoch number. A node that receives such a message
 // will become the new holder and will set its epoch number to the message’s
-// epoch number.  
+// epoch number.
 
 // You'll first need to modify 'host.v.dfy' to define the protocol message
 // format and the host behavior.
-// Then come back here define the safety condition and prove that the
+// Then come back here to define the safety condition and prove that the
 // distributed system made from that protocol maintains it.
 
 include "distributed_system.t.dfy"
@@ -31,17 +31,17 @@ module SafetySpec {
 
   // Define this predicate to be true if idx is a valid host ID and that host's
   // Variables indicates that it holds the lock.
-  predicate HostHoldsLock(c:DistributedSystem.Constants, v:DistributedSystem.Variables, idx: int) {
+  ghost predicate HostHoldsLock(c:DistributedSystem.Constants, v:DistributedSystem.Variables, idx: int) {
     && v.WF(c)
 /*{*/
     && false
 /*}*/
   }
 
-  // No two hosts think they hold the lock simulatneously.
-  predicate Safety(c:DistributedSystem.Constants, v:DistributedSystem.Variables) {
+  // No two hosts think they hold the lock simultaneously.
+  ghost predicate Safety(c:DistributedSystem.Constants, v:DistributedSystem.Variables) {
 /*{*/
-    true // Replace this placeholder with an appropriate safety condition: no two clients hold
+    true // Replace this placeholder with an appropriate safety condition
 /*}*/
   }
 }
@@ -53,7 +53,7 @@ module Proof {
   import opened SafetySpec
 
   // Here's a predicate that will be very useful in constructing inviariant conjuncts.
-  predicate InFlight(c:Constants, v:Variables, message:Host.Message) {
+  ghost predicate InFlight(c:Constants, v:Variables, message:Host.Message) {
     && v.WF(c)
     && message in v.network.sentMsgs
 /*{*/
@@ -64,7 +64,7 @@ module Proof {
 /*{*/
 /*}*/
 
-  predicate Inv(c: Constants, v:Variables) {
+  ghost predicate Inv(c: Constants, v:Variables) {
 /*{*/
     false // Replace this placeholder with an invariant that's inductive and supports Safety.
 /*}*/

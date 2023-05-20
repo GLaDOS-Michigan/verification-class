@@ -16,7 +16,7 @@ module Types {
     | ProduceReply(request: Input)
     | ConsumeReply(request: Input)
   {
-    predicate WF() {
+    ghost predicate WF() {
       match this
         case ProduceReply(request) => request.ProduceRequest?
         case ConsumeReply(request) => request.ConsumeRequest?
@@ -78,7 +78,7 @@ module EventSequenceRecorder {
   datatype Constants = Constants()  // No constants
   datatype Variables = Variables(requests:set<Input>, replies:set<Output>)
 
-  predicate Init(c: Constants, v: Variables)
+  ghost predicate Init(c: Constants, v: Variables)
   {
     // Initialize Variables correctly. Same idea as in the previous chapter.
 /*{*/
@@ -95,17 +95,17 @@ module EventSequenceRecorder {
   // The Host protocol can consume any request it wants, and introduce any reply
   // it wants; that won't affect meaning, since it ultimately has to get the
   // incoming requests and outgoing replies to match what the spec allows.
-  predicate Execute(c: Constants, v: Variables, v': Variables, internalOp: InternalOp)
+  ghost predicate Execute(c: Constants, v: Variables, v': Variables, internalOp: InternalOp)
     requires internalOp.ExecuteOp?
   {
     // Record that a request has been transformed into a reply.
     // Same idea as in the previous chapter.
 /*{*/
-    && true 
+    && true
 /*}*/
   }
 
-  predicate Internal(c: Constants, v: Variables, v': Variables)
+  ghost predicate Internal(c: Constants, v: Variables, v': Variables)
   {
     && v' == v
   }
@@ -113,7 +113,7 @@ module EventSequenceRecorder {
   // Record the claim that a client actually made this request.
   // This corresponds to a trusted handler attesting that the client wanted the
   // request, it wasn't just invented by the protocol.
-  predicate AcceptRequest(c: Constants, v: Variables, v': Variables, request: Input)
+  ghost predicate AcceptRequest(c: Constants, v: Variables, v': Variables, request: Input)
   {
     // Record that a client has introduced a new request into the system.
     // Same idea as in the previous chapter.
@@ -126,7 +126,7 @@ module EventSequenceRecorder {
   // it's been delivered so we can't deliver a duplicate later.
   // This corresponds to a trusted handler attesting that this reply was
   // exposed to the client -- so the spec must justify the exposed value.
-  predicate DeliverReply(c: Constants, v: Variables, v': Variables, reply: Output)
+  ghost predicate DeliverReply(c: Constants, v: Variables, v': Variables, reply: Output)
   {
     // Record that a reply has been delivered to a client.
     // Same idea as in the previous chapter.
@@ -135,7 +135,7 @@ module EventSequenceRecorder {
 /*}*/
   }
 
-  predicate Next(c: Constants, v: Variables, v': Variables, event: Event)
+  ghost predicate Next(c: Constants, v: Variables, v': Variables, event: Event)
   {
     match event
       case ExternalEvent(clientOp) => (
@@ -159,7 +159,7 @@ module AtomicWarehouse {
   datatype Constants = Constants()
   datatype Variables = Variables(inventory: nat)
 
-  predicate Produce(c: Constants, v: Variables, v': Variables, internalOp: InternalOp)
+  ghost predicate Produce(c: Constants, v: Variables, v': Variables, internalOp: InternalOp)
     requires internalOp.ExecuteOp?
     requires internalOp.request.ProduceRequest?
   {
@@ -167,7 +167,7 @@ module AtomicWarehouse {
     && v'.inventory == v.inventory + internalOp.request.units
   }
 
-  predicate Consume(c: Constants, v: Variables, v': Variables, internalOp: InternalOp)
+  ghost predicate Consume(c: Constants, v: Variables, v': Variables, internalOp: InternalOp)
     requires internalOp.ExecuteOp?
     requires internalOp.request.ConsumeRequest?
   {
@@ -176,16 +176,16 @@ module AtomicWarehouse {
     && v'.inventory == v.inventory - internalOp.request.units
   }
 
-  predicate Internal(c: Constants, v: Variables, v': Variables, internalOp: InternalOp)
+  ghost predicate Internal(c: Constants, v: Variables, v': Variables, internalOp: InternalOp)
   {
     && v' == v
   }
 
-  predicate Init(c: Constants, v: Variables) {
+  ghost predicate Init(c: Constants, v: Variables) {
     && v.inventory == 0
   }
 
-  predicate Next(c: Constants, v: Variables, v': Variables, internalOp: InternalOp) {
+  ghost predicate Next(c: Constants, v: Variables, v': Variables, internalOp: InternalOp) {
     match internalOp
       case ExecuteOp(_, _) => (
         match internalOp.request
@@ -213,7 +213,7 @@ module AsyncWarehouseSpec {
     events: EventSequenceRecorder.Variables
   )
 
-  predicate Init(c: Constants, v: Variables) {
+  ghost predicate Init(c: Constants, v: Variables) {
     && AtomicWarehouse.Init(c.app, v.app)
     && EventSequenceRecorder.Init(c.events, v.events)
   }
@@ -221,7 +221,7 @@ module AsyncWarehouseSpec {
   // Transitions of this trusted spec are *labeled* with an event so we can
   // require the refinement to preserve events observed at the trusted physical
   // ESR boundary in the implementation.
-  predicate Next(c: Constants, v: Variables, v': Variables, event: Event) {
+  ghost predicate Next(c: Constants, v: Variables, v': Variables, event: Event) {
     // EventSequenceRecorder observes every event
     && EventSequenceRecorder.Next(c.events, v.events, v'.events, event)
     // App "business logic" observes only InternalEvents.
@@ -270,12 +270,12 @@ module Network {
   // is sent twice, we can't disappear one of them.
   datatype Variables = Variables(inFlightMessages:multiset<Message>)
 
-  predicate Init(c: Constants, v: Variables)
+  ghost predicate Init(c: Constants, v: Variables)
   {
     && v.inFlightMessages == multiset{}
   }
 
-  predicate Next(c: Constants, v: Variables, v': Variables, msgOps: MessageOps)
+  ghost predicate Next(c: Constants, v: Variables, v': Variables, msgOps: MessageOps)
   {
     // Only allow receipt of a message if we've seen it has been sent.
     && (msgOps.recv.Some? ==> msgOps.recv.value in v.inFlightMessages)
@@ -302,7 +302,7 @@ module Host {
   type HostId = Network.HostId
 
   datatype Constants = Constants(myId: HostId) {
-    predicate GroupWF(id: HostId) {
+    ghost predicate GroupWF(id: HostId) {
       && myId == id
     }
   }
@@ -311,12 +311,12 @@ module Host {
     inventory: nat  // This is the local inventory at this Host's "warehouse"
   )
 
-  predicate Init(c: Constants, v: Variables)
+  ghost predicate Init(c: Constants, v: Variables)
   {
     && v.inventory == 0
   }
 
-  predicate Produce(c: Constants, v: Variables, v': Variables, internalOp: InternalOp, msgOps: Network.MessageOps)
+  ghost predicate Produce(c: Constants, v: Variables, v': Variables, internalOp: InternalOp, msgOps: Network.MessageOps)
     // This precondition is already checked in NextStep's case
     requires internalOp.ExecuteOp?
     requires internalOp.request.ProduceRequest?
@@ -327,7 +327,7 @@ module Host {
     && v' == v.(inventory := v.inventory + request.units)
   }
 
-  predicate Consume(c: Constants, v: Variables, v': Variables, internalOp: InternalOp, msgOps: Network.MessageOps)
+  ghost predicate Consume(c: Constants, v: Variables, v': Variables, internalOp: InternalOp, msgOps: Network.MessageOps)
     // This precondition is already checked in NextStep's case
     requires internalOp.ExecuteOp?
     requires internalOp.request.ConsumeRequest?
@@ -338,8 +338,8 @@ module Host {
     && request.units <= v.inventory   // Must have sufficient inventory locally
     && v' == v.(inventory := v.inventory - request.units)
   }
-  
-  predicate SendTransfer(c: Constants, v: Variables, v': Variables, msgOps: Network.MessageOps) {
+
+  ghost predicate SendTransfer(c: Constants, v: Variables, v': Variables, msgOps: Network.MessageOps) {
     && msgOps.recv.None?
     && msgOps.send.Some?
     && var transferMsg := msgOps.send.value;
@@ -348,7 +348,7 @@ module Host {
     && v' == v.(inventory := v.inventory - transferMsg.units)
   }
 
-  predicate ReceiveTransfer(c: Constants, v: Variables, v': Variables, msgOps: Network.MessageOps) {
+  ghost predicate ReceiveTransfer(c: Constants, v: Variables, v': Variables, msgOps: Network.MessageOps) {
     && msgOps.recv.Some?
     && msgOps.send.None?
     && var transferMsg := msgOps.recv.value;
@@ -361,7 +361,7 @@ module Host {
     | SendTransferStep()    // internal step (looks like noop to spec)
     | ReceiveTransferStep() // internal step (looks like noop to spec)
 
-  predicate NextStep(c: Constants, v: Variables, v': Variables, internalOp: InternalOp, msgOps: Network.MessageOps, step: Step)
+  ghost predicate NextStep(c: Constants, v: Variables, v': Variables, internalOp: InternalOp, msgOps: Network.MessageOps, step: Step)
   {
     match step
       case ExecuteOpStep => (
@@ -378,7 +378,7 @@ module Host {
         && ReceiveTransfer(c, v, v', msgOps)
   }
 
-  predicate Next(c: Constants, v: Variables, v': Variables, internalOp: InternalOp, msgOps: Network.MessageOps)
+  ghost predicate Next(c: Constants, v: Variables, v': Variables, internalOp: InternalOp, msgOps: Network.MessageOps)
   {
     exists step: Step :: NextStep(c, v, v', internalOp, msgOps, step)
   }
@@ -401,10 +401,10 @@ module DistributedSystem {
 
   datatype Constants = Constants(hosts: seq<Host.Constants>, events: EventSequenceRecorder.Constants, network: Network.Constants)
   {
-    predicate ValidHost(idx: HostId) {
+    ghost predicate ValidHost(idx: HostId) {
       idx < |hosts|
     }
-    predicate WF() {
+    ghost predicate WF() {
       && 0 < |hosts|
       // configure each host with its id
       && (forall idx: HostId | ValidHost(idx) :: hosts[idx].GroupWF(idx))
@@ -416,13 +416,13 @@ module DistributedSystem {
     events: EventSequenceRecorder.Variables,
     network: Network.Variables)
   {
-    predicate WF(c: Constants) {
+    ghost predicate WF(c: Constants) {
       && c.WF()
       && |hosts| == |c.hosts|
     }
   }
 
-  predicate Init(c: Constants, v: Variables)
+  ghost predicate Init(c: Constants, v: Variables)
   {
     && v.WF(c)
     && (forall idx: HostId | c.ValidHost(idx) :: Host.Init(c.hosts[idx], v.hosts[idx]))
@@ -432,19 +432,19 @@ module DistributedSystem {
 
   // Have ESR module record an incoming request or delivers a reply;
   // no host does anything.
-  predicate ClientOpAction(c: Constants, v: Variables, v': Variables, event: Event)
+  ghost predicate ClientOpAction(c: Constants, v: Variables, v': Variables, event: Event)
   {
     && v.WF(c)
     && v'.WF(c)
 /*{*/
     // Define this predicate. You're defining trusted bottom-bread spec now, so be careful!
     && true
-    
+
 /*}*/
   }
 
   // I named this subpredicate because I use it repeatedly in the proof
-  predicate OneHostChanged(c: Constants, v: Variables, v': Variables, hostId: HostId)
+  ghost predicate OneHostChanged(c: Constants, v: Variables, v': Variables, hostId: HostId)
     requires v.WF(c) && v'.WF(c)
     requires c.ValidHost(hostId)
   {
@@ -452,7 +452,7 @@ module DistributedSystem {
     && (forall otherIdx: HostId | c.ValidHost(otherIdx) && otherIdx != hostId :: v'.hosts[otherIdx] == v.hosts[otherIdx])
   }
 
-  predicate HostOpAction(c: Constants, v: Variables, v': Variables, event: Event, msgOps: Network.MessageOps, hostId: HostId)
+  ghost predicate HostOpAction(c: Constants, v: Variables, v': Variables, event: Event, msgOps: Network.MessageOps, hostId: HostId)
   {
     && v.WF(c)
     && v'.WF(c)
@@ -477,14 +477,14 @@ module DistributedSystem {
     | ClientStep()
     | HostStep(msgOps: Network.MessageOps, hostId: HostId)
 
-  predicate NextStep(c: Constants, v: Variables, v': Variables, event: Event, step: Step)
+  ghost predicate NextStep(c: Constants, v: Variables, v': Variables, event: Event, step: Step)
   {
     && match step
         case ClientStep() => ClientOpAction(c, v, v', event)
         case HostStep(msgOps, hostId) => HostOpAction(c, v, v', event, msgOps, hostId)
   }
 
-  predicate Next(c: Constants, v: Variables, v': Variables, event: Event)
+  ghost predicate Next(c: Constants, v: Variables, v': Variables, event: Event)
   {
     exists step :: NextStep(c, v, v', event, step)
   }
@@ -500,13 +500,13 @@ abstract module RefinementObligation {
   import opened DistributedSystem
   import AsyncWarehouseSpec
 
-  function ConstantsAbstraction(c: Constants) : AsyncWarehouseSpec.Constants
+  ghost function ConstantsAbstraction(c: Constants) : AsyncWarehouseSpec.Constants
     requires c.WF()
 
-  function VariablesAbstraction(c: Constants, v: Variables) : AsyncWarehouseSpec.Variables
+  ghost function VariablesAbstraction(c: Constants, v: Variables) : AsyncWarehouseSpec.Variables
     requires v.WF(c)
 
-  predicate Inv(c: Constants, v: Variables)
+  ghost predicate Inv(c: Constants, v: Variables)
 
   lemma RefinementInit(c: Constants, v: Variables)
     requires Init(c, v)
@@ -524,19 +524,19 @@ abstract module RefinementObligation {
 }
 
 // We have provided the refinement proof, but you'll have to fill in the Abstraction
-// function for the proof to go through. 
+// function for the proof to go through.
 module RefinementProof refines RefinementObligation {
   import opened MessageType
   import AtomicWarehouse
-  
-  function ConstantsAbstraction(c: Constants) : AsyncWarehouseSpec.Constants
+
+  ghost function ConstantsAbstraction(c: Constants) : AsyncWarehouseSpec.Constants
 // precondition assumed by RefinementObligation:
 //    requires c.WF()
   {
     AsyncWarehouseSpec.Constants(AtomicWarehouse.Constants(), EventSequenceRecorder.Constants())
   }
 
-  function SumOfHostInventoryInner(c: Constants, v: Variables, count: nat) : nat
+  ghost function SumOfHostInventoryInner(c: Constants, v: Variables, count: nat) : nat
     requires v.WF(c)
     requires count <= |c.hosts|
   {
@@ -545,19 +545,19 @@ module RefinementProof refines RefinementObligation {
     else SumOfHostInventoryInner(c, v, count-1) + v.hosts[count-1].inventory
   }
 
-  function SumOfHostInventory(c: Constants, v: Variables) : nat
+  ghost function SumOfHostInventory(c: Constants, v: Variables) : nat
     requires v.WF(c)
   {
     SumOfHostInventoryInner(c, v, |c.hosts|)
   }
 
-  function StableChooseMsg(msgs: multiset<Message>) : Message
+  ghost function StableChooseMsg(msgs: multiset<Message>) : Message
     requires 0 < |msgs|
   {
       var msg :| msg in msgs; msg
   }
 
-  function SumOfNetworkInventoryInner(msgs: multiset<Message>) : nat
+  ghost function SumOfNetworkInventoryInner(msgs: multiset<Message>) : nat
   {
     if |msgs| == 0
     then 0
@@ -566,12 +566,12 @@ module RefinementProof refines RefinementObligation {
       SumOfNetworkInventoryInner(msgs - multiset{msg}) + msg.units
   }
 
-  function SumOfNetworkInventory(c: Constants, v: Variables) : nat
+  ghost function SumOfNetworkInventory(c: Constants, v: Variables) : nat
   {
     SumOfNetworkInventoryInner(v.network.inFlightMessages)
   }
 
-  function VariablesAbstraction(c: Constants, v: Variables) : AsyncWarehouseSpec.Variables
+  ghost function VariablesAbstraction(c: Constants, v: Variables) : AsyncWarehouseSpec.Variables
 // precondition assumed by RefinementObligation:
 //    requires v.WF(c)
   {
@@ -583,7 +583,7 @@ module RefinementProof refines RefinementObligation {
 /*}*/
   }
 
-  predicate Inv(c: Constants, v: Variables)
+  ghost predicate Inv(c: Constants, v: Variables)
   {
     && v.WF(c)
 
@@ -729,7 +729,8 @@ module RefinementProof refines RefinementObligation {
             HostInventoryChangeLemma(c, v, v', hostId, -(msgOps.send.value.units as int), |c.hosts|);
             NetworkInventoryChangeLemma(v.network.inFlightMessages, v'.network.inFlightMessages, msgOps.send.value);
           }
-          case ReceiveTransferStep => {
+          case ReceiveTransferStep =>
+                  {
             HostInventoryChangeLemma(c, v, v', hostId, msgOps.recv.value.units, |c.hosts|);
             // Note swapped v', v to run lemma backwards:
             NetworkInventoryChangeLemma(v'.network.inFlightMessages, v.network.inFlightMessages, msgOps.recv.value);

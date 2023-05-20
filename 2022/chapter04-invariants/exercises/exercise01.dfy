@@ -6,35 +6,35 @@ module Crawler {
   //datatype Constants = Constants()
   datatype Variables = Variables(x:int, y:int)
 
-  predicate Init(v:Variables) {
+  ghost predicate Init(v:Variables) {
     && v.x == 0
     && v.y == 5
   }
 
-  predicate MoveNorth(v:Variables, v':Variables) {
+  ghost predicate MoveNorth(v:Variables, v':Variables) {
     && v'.x == v.x
     && v'.y == v.y + 1
   }
 
-  predicate MoveSouthEast(v:Variables, v':Variables) {
+  ghost predicate MoveSouthEast(v:Variables, v':Variables) {
     && v'.x == v.x + 1
     && v'.y == v.y - 1
   }
 
-  predicate Next(v:Variables, v':Variables) {
+  ghost predicate Next(v:Variables, v':Variables) {
     || MoveNorth(v, v')
     || MoveSouthEast(v, v')
   }
 
-  predicate InManhole(v:Variables) {
+  ghost predicate InManhole(v:Variables) {
     v.x*v.x + v.y*v.y <= 3*3
   }
 
-  predicate Safety(v:Variables) {
+  ghost predicate Safety(v:Variables) {
     !InManhole(v)
   }
 
-  predicate Inv(v:Variables) {
+  ghost predicate Inv(v:Variables) {
 /*{*/
     true  // probably not strong enough. :v)
 /*}*/

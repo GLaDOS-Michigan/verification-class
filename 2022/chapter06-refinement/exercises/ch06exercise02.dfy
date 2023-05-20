@@ -1,151 +1,103 @@
-//#title State Machine Spec for Atomic Commit
-//#desc Build an abstract behavioral model that captures the
-//#desc semantics of an evolving system to use as a refinement
-//#desc reference for its more-complicated implementation.
+//#title Property Lemmas for Atomic Commit
+//#desc The state machine model captures AC2 nicely,
+//#desc but let's make it very clear that the model also obeys
+//#desc AC1, AC3 and AC4.
 
-// Define the specification of atomic commit in the form of a state
-// machine.
+// To increase our confidence that our state machine spec from
+// exercise02 accurately defines our goal,
+// we can state and prove some properties about it.
 //
-// The abstract model doesn't worry about network communication. Instead,
-// it models the input:
-//     - which participants prefer which outcomes
-// and the outputs:
-//     - what the coordinator thinks the decision was
-//     - what each participant thinks the decision was
-// This definition should make it obvious by inspection that the output decisions
-// all agree (AC1) and they output decisions comply with the input preferences
-// (AC3, AC4).
+// AC1: All processes that reach a decision reach the same one.
+// AC3: The Commit decision can only be reached if all processes prefer Yes.
+// AC4: If all processes prefer Yes, then the decision must be Commit.
 //
-// In a future exercise, we'll show refinement: that the 2PC protocol correctly
-// computs
+// We'll not bother with AC2 because it can't be stated as a safety
+// property, however it should be abundantly clear from the Next
+// action of the state machine model.
+// AC2: (stability) A process cannot reverse its decision after it has reached one.
 //
-// Note that this is a (trusted) spec -- this file already passes Dafny, but
-// it's a terrible spec, because it doesn't say anything useful. (Recall the
-// lesson of chapter01/exercise20.dfy.) Consider running your result past an
-// instructor in office hours to be sure it's a good spec.
+// We'll not bother with AC5 because it's a liveness property, which
+// is outside the scope of this course.
+// AC5: (liveness) All processes eventually decide.
+//
+// If you wrote a broken spec, it will be difficult to prove these properties
+// on it.
 
-include "UtilitiesLibrary.dfy"
-include "CommitTypes.dfy"
-//#extract ../../chapter05-distributed-state-machines/exercises/CommitTypes.template solution CommitTypes.dfy
+include "ch06exercise01.dfy"
+//#extract ch06exercise01.template solution ch06exercise01.dfy
 
-// This is the specification state machine. It defines what the implementation
-// is trying to accomplish, while ignoring all implementation details.
-module AtomicCommit {
+module AtomicCommitProperties {
   import opened CommitTypes
-  import opened UtilitiesLibrary
+  import opened AtomicCommit
 
-  type ParticipantId = nat
-
-  // We'll give you the state data structure; it'll be your job to define the
-  // actions.  The input preferences are constant, so we record them here.
-  datatype Constants = Constants(participantCount: nat, preferences:seq<Vote>)
-  {
-    predicate WF() {
-      && |preferences| == participantCount
-    }
-    predicate ValidParticipant(idx: ParticipantId) { idx < participantCount }
-  }
-
-  // The outputs are the decision reached by the coordinator and those
-  // observed by the participants.
-  // None? capture the idea that initially nobody knows the decision.
-  // In your actions, make AC2 abundantly obvious: once a None? turns into a
-  // Some?, it can't ever change.
-  datatype Variables = Variables(coordinatorDecision: Option<Decision>, 
-                                 participantDecisions: seq<Option<Decision>>)
-  {
-    predicate WF(c: Constants) {
-      && c.WF()
-      && |participantDecisions| == c.participantCount
-    }
-  }
-  
-  predicate Init(c: Constants, v: Variables) 
+  // Make this predicate true if every host (coordinator or one of the participants) that
+  // has learned a decision has recorded `decision`. (Hosts that haven't yet learned a
+  // decision shouldn't affect the value of this predicate.)
+  //
+  // Defining this predicate makes the definitions of the AC properties
+  // much easier to read (and in fact easier for Dafny to automate).
+  ghost predicate AllWithDecisionAgreeWithThisOne(c: Constants, v: Variables, decision: Decision)
+    requires c.WF()
+    requires v.WF(c)
   {
 /*{*/
     true // Replace me
 /*}*/
   }
 
-  // We can tell what the ultimate decision has to be just from the constants.
-  // Define that in this function, and then use it to constrain what actions
-  // can happen in the state machine.
-  function UltimateDecision(c: Constants) : Decision
+  ghost predicate SafetyAC1(c: Constants, v: Variables)
     requires c.WF()
+    requires v.WF(c)
   {
 /*{*/
-    Commit // Replace me
+    false // Replace me
 /*}*/
   }
 
-/*{*/
-/*}*/
+  // AC2 can't be stated about a single state; the "code reviewer"
+  // should be able to confirm it by reading the state machine spec
+  // from exercise02.
 
-  // JayNF
-  datatype Step = 
+  ghost predicate SafetyAC3(c: Constants, v: Variables)
+    requires c.WF()
+    requires v.WF(c)
+  {
 /*{*/
-    ReplaceMeWithYourJayNFSteps()
+    false // Replace me
 /*}*/
-  
-  predicate NextStep(c: Constants, v: Variables, v': Variables, step: Step)
+  }
+
+  ghost predicate SafetyAC4(c: Constants, v: Variables)
+    requires c.WF()
+    requires v.WF(c)
+  {
+/*{*/
+    false // Replace me
+/*}*/
+  }
+
+  // AC5 is a liveness proprety, we're definitely going to ignore it.
+
+  //#instructor Player 1
+  ghost predicate Safety(c: Constants, v: Variables)
   {
     && c.WF()
     && v.WF(c)
-    && v'.WF(c)
-    && (
-      match step
-/*{*/
-    case ReplaceMeWithYourJayNFSteps => true
-/*}*/
-      )
+    && SafetyAC1(c, v)
+    && SafetyAC3(c, v)
+    && SafetyAC4(c, v)
   }
 
-  predicate Next(c: Constants, v: Variables, v': Variables)
+  lemma SafetyInit(c: Constants, v: Variables)
+    requires Init(c, v)
+    ensures Safety(c, v)
   {
-    exists step :: NextStep(c, v, v', step)
   }
 
-  predicate ExecutionSatisfiesSpec(c: Constants, ex: seq<Variables>)
+  lemma SafetyNext(c: Constants, v: Variables, v': Variables, event: Event)
+    requires Safety(c, v)
+    requires Next(c, v, v', event)
+    ensures Safety(c, v')
   {
-    && 0 < |ex|
-    && (forall i | 0 < i < |ex| :: ex[i].WF(c))
-    && Init(c, ex[0])
-    && (forall i | 0 <= i < |ex|-1 :: Next(c, ex[i], ex[i+1]))
-  }
-
-  // Show us an execution that satisfies your state machine and arrives at Commit.
-  lemma PseudoLivenessCommit(c: Constants) returns (ex: seq<Variables>)
-    requires c == Constants(2, [Yes, Yes])
-    ensures UltimateDecision(c) == Commit
-    ensures ExecutionSatisfiesSpec(c, ex)
-    // At the end, everybody learns Commit.
-    ensures Last(ex).coordinatorDecision == Some(Commit)
-    ensures Last(ex).participantDecisions[0] == Some(Commit)
-    ensures Last(ex).participantDecisions[1] == Some(Commit)
-  {
-/*{*/
-    ex := [];  // Your execution here.
-/*}*/
-    return ex;
-  }
-
-  // Show us another execution that satisfies your state machine and arrives at Abort.
-  lemma PseudoLivenessAbort(c: Constants) returns (ex: seq<Variables>)
-    requires c == Constants(2, [Yes, No])
-    ensures UltimateDecision(c) == Abort
-    ensures ExecutionSatisfiesSpec(c, ex)
-    // At the end, everybody learns Abort.
-    ensures Last(ex).coordinatorDecision == Some(Abort)
-    ensures Last(ex).participantDecisions[0] == Some(Abort)
-    ensures Last(ex).participantDecisions[1] == Some(Abort)
-  {
-/*{*/
-    ex := [];  // Your execution here.
-/*}*/
-    return ex;
   }
 }
-
-
-
-

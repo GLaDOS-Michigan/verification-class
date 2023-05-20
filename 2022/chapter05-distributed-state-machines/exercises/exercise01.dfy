@@ -27,7 +27,7 @@
 // define Types.Message and then fill in the state machine types and actions
 // in module CoordinatorHost and module ParticipantHost.
 //
-// Unlike chapter01, where you could work exercises sequentially,
+// Unlike chapter01, where you could work through each file sequentially,
 // WE STRONGLY ENCOURAGE YOU to read the entire file before beginning
 // work. Later pieces of the file are helpful, for example by explaining
 // the network model you're working in, and by helping you understand
@@ -77,7 +77,7 @@ module CoordinatorHost {
   // What relationship must hold between this host's own constants and the
   // structure of the overall group of hosts? It needs to have a correct
   // count of the number of participants.
-  predicate ConstantsValidForGroup(c: Constants, participantCount: nat)
+  ghost predicate ConstantsValidForGroup(c: Constants, participantCount: nat)
   {
 /*{*/
     true // replace me
@@ -92,14 +92,14 @@ module CoordinatorHost {
   {
     // WF is for a simple condition that relates every valid Variables state
     // to the Constants.
-    predicate WF(c: Constants) {
+    ghost predicate WF(c: Constants) {
 /*{*/
   true
 /*}*/
     }
   }
 
-  predicate Init(c: Constants, v: Variables)
+  ghost predicate Init(c: Constants, v: Variables)
   {
 /*{*/
   true // replace me
@@ -123,7 +123,7 @@ module CoordinatorHost {
   // on its assignment to make a valid transition. So the host explains what
   // would happen if it could receive a particular message, and the network
   // decides whether such a message is available for receipt.
-  predicate NextStep(c: Constants, v: Variables, v': Variables, step: Step, msgOps: MessageOps)
+  ghost predicate NextStep(c: Constants, v: Variables, v': Variables, step: Step, msgOps: MessageOps)
   {
     match step
 /*{*/
@@ -131,7 +131,7 @@ module CoordinatorHost {
 /*}*/
   }
 
-  predicate Next(c: Constants, v: Variables, v': Variables, msgOps: MessageOps)
+  ghost predicate Next(c: Constants, v: Variables, v': Variables, msgOps: MessageOps)
   {
     exists step :: NextStep(c, v, v', step, msgOps)
   }
@@ -146,7 +146,7 @@ module ParticipantHost {
 
   // What relationship must hold between this host's own constants and the
   // structure of the overall group of hosts? It needs to know its hostId.
-  predicate ConstantsValidForGroup(c: Constants, hostId: HostId)
+  ghost predicate ConstantsValidForGroup(c: Constants, hostId: HostId)
   {
 /*{*/
   true // replace me
@@ -155,14 +155,14 @@ module ParticipantHost {
 
   datatype Variables = Variables(decision: Option<Decision>)
   {
-    predicate WF(c: Constants) {
+    ghost predicate WF(c: Constants) {
 /*{*/
   true
 /*}*/
     }
   }
 
-  predicate Init(c: Constants, v: Variables)
+  ghost predicate Init(c: Constants, v: Variables)
   {
 /*{*/
   true // replace me
@@ -180,7 +180,7 @@ module ParticipantHost {
   ReplaceMeWithYourJayNFSteps()
 /*}*/
 
-  predicate NextStep(c: Constants, v: Variables, v': Variables, step: Step, msgOps: MessageOps)
+  ghost predicate NextStep(c: Constants, v: Variables, v': Variables, step: Step, msgOps: MessageOps)
   {
     match step
 /*{*/
@@ -188,7 +188,7 @@ module ParticipantHost {
 /*}*/
   }
 
-  predicate Next(c: Constants, v: Variables, v': Variables, msgOps: MessageOps)
+  ghost predicate Next(c: Constants, v: Variables, v': Variables, msgOps: MessageOps)
   {
     exists step :: NextStep(c, v, v', step, msgOps)
   }
@@ -214,7 +214,7 @@ module Host {
     | CoordinatorVariables(coordinator: CoordinatorHost.Variables)
     | ParticipantVariables(participant: ParticipantHost.Variables)
   {
-    predicate WF(c: Constants) {
+    ghost predicate WF(c: Constants) {
       && (CoordinatorVariables? <==> c.CoordinatorConstants?) // types of c & v agree
       // subtype WF satisfied
       && (match c
@@ -227,7 +227,7 @@ module Host {
   // What property must be true of any group of hosts to run the protocol?
   // Generic DistributedSystem module calls back into this predicate to ensure
   // that it has a well-formed *group* of hosts.
-  predicate GroupWFConstants(grp_c: seq<Constants>)
+  ghost predicate GroupWFConstants(grp_c: seq<Constants>)
   {
     // There must at least be a coordinator
     && 0 < |grp_c|
@@ -244,7 +244,7 @@ module Host {
         :: ParticipantHost.ConstantsValidForGroup(grp_c[hostid].participant, hostid))
   }
 
-  predicate GroupWF(grp_c: seq<Constants>, grp_v: seq<Variables>)
+  ghost predicate GroupWF(grp_c: seq<Constants>, grp_v: seq<Variables>)
   {
     && GroupWFConstants(grp_c)
     // Variables size matches group size defined by grp_c
@@ -258,7 +258,7 @@ module Host {
   // hosts.  Protocol requires one coordinator and the rest participants;
   // coordinator must know how many participants, and participants must know
   // own ids.
-  predicate GroupInit(grp_c: seq<Constants>, grp_v: seq<Variables>)
+  ghost predicate GroupInit(grp_c: seq<Constants>, grp_v: seq<Variables>)
   {
     // constants & variables are well-formed (same number of host slots as constants expect)
     && GroupWF(grp_c, grp_v)
@@ -271,7 +271,7 @@ module Host {
   }
 
   // Dispatch Next to appropriate underlying implementation.
-  predicate Next(c: Constants, v: Variables, v': Variables, msgOps: MessageOps)
+  ghost predicate Next(c: Constants, v: Variables, v': Variables, msgOps: MessageOps)
   {
     && v.WF(c)
     && v'.WF(c)
@@ -300,12 +300,12 @@ module Network {
   // also doubles as how multiple parties can hear the message.)
   datatype Variables = Variables(sentMsgs:set<Message>)
 
-  predicate Init(c: Constants, v: Variables)
+  ghost predicate Init(c: Constants, v: Variables)
   {
     && v.sentMsgs == {}
   }
 
-  predicate Next(c: Constants, v: Variables, v': Variables, msgOps: MessageOps)
+  ghost predicate Next(c: Constants, v: Variables, v': Variables, msgOps: MessageOps)
   {
     // Only allow receipt of a message if we've seen it has been sent.
     && (msgOps.recv.Some? ==> msgOps.recv.value in v.sentMsgs)
@@ -334,10 +334,10 @@ module DistributedSystem {
     hosts: seq<Host.Constants>,
     network: Network.Constants)
   {
-    predicate WF() {
+    ghost predicate WF() {
       Host.GroupWFConstants(hosts)
     }
-    predicate ValidHostId(id: HostId) {
+    ghost predicate ValidHostId(id: HostId) {
       id < |hosts|
     }
   }
@@ -346,20 +346,20 @@ module DistributedSystem {
     hosts: seq<Host.Variables>,
     network: Network.Variables)
   {
-    predicate WF(c: Constants) {
+    ghost predicate WF(c: Constants) {
       && c.WF()
       && Host.GroupWF(c.hosts, hosts)
     }
   }
 
-  predicate Init(c: Constants, v: Variables)
+  ghost predicate Init(c: Constants, v: Variables)
   {
     && v.WF(c)
     && Host.GroupInit(c.hosts, v.hosts)
     && Network.Init(c.network, v.network)
   }
 
-  predicate HostAction(c: Constants, v: Variables, v': Variables, hostid: HostId, msgOps: MessageOps)
+  ghost predicate HostAction(c: Constants, v: Variables, v': Variables, hostid: HostId, msgOps: MessageOps)
   {
     && v.WF(c)
     && v'.WF(c)
@@ -373,19 +373,19 @@ module DistributedSystem {
   datatype Step =
     | HostActionStep(hostid: HostId, msgOps: MessageOps)
 
-  predicate NextStep(c: Constants, v: Variables, v': Variables, step: Step)
+  ghost predicate NextStep(c: Constants, v: Variables, v': Variables, step: Step)
   {
     && HostAction(c, v, v', step.hostid, step.msgOps)
     // network agrees recv has been sent and records sent
     && Network.Next(c.network, v.network, v'.network, step.msgOps)
   }
 
-  predicate Next(c: Constants, v: Variables, v': Variables)
+  ghost predicate Next(c: Constants, v: Variables, v': Variables)
   {
     exists step :: NextStep(c, v, v', step)
   }
 
-  function GetDecisionForHost(hv: Host.Variables) : Option<Decision>
+  ghost function GetDecisionForHost(hv: Host.Variables) : Option<Decision>
   {
     match hv
       case CoordinatorVariables(coordinator) => coordinator.decision

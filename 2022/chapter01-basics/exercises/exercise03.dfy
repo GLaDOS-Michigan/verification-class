@@ -6,7 +6,7 @@
 
 // Run dafny on this file. See where it fails. Fix it.
 
-function Double(val:int) : int
+ghost function Double(val:int) : int
 {
   // The body of a function is an expression context. No semicolon
   // at the end.

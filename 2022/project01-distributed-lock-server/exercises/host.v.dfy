@@ -22,7 +22,7 @@ module Host {
   datatype Constants = Constants(numHosts: nat, myId:HostId) {
     // host constants coupled to DistributedSystem Constants:
     // DistributedSystem tells us our id so we can recognize inbound messages.
-    predicate Configure(numHosts: nat, id:HostId) {
+    ghost predicate Configure(numHosts: nat, id:HostId) {
       && this.numHosts == numHosts
       && this.myId == id
     }
@@ -34,7 +34,7 @@ module Host {
 /*}*/
   )
 
-  predicate Init(c:Constants, v:Variables) {
+  ghost predicate Init(c:Constants, v:Variables) {
 /*{*/
   true // Replace me
 /*}*/
@@ -48,14 +48,14 @@ module Host {
     | SomeStep   // Replace me
 /*}*/
 
-  predicate NextStep(c:Constants, v:Variables, v':Variables, msgOps:Network.MessageOps<Message>, step: Step) {
+  ghost predicate NextStep(c:Constants, v:Variables, v':Variables, msgOps:Network.MessageOps<Message>, step: Step) {
     match step
 /*{*/
   case SomeStep => true
 /*}*/
   }
 
-  predicate Next(c:Constants, v:Variables, v':Variables, msgOps:Network.MessageOps<Message>) {
+  ghost predicate Next(c:Constants, v:Variables, v':Variables, msgOps:Network.MessageOps<Message>) {
     exists step :: NextStep(c, v, v', msgOps, step)
   }
 }

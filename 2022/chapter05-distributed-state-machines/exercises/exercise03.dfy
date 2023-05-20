@@ -15,7 +15,7 @@ module TwoPCInvariantProof {
 /*}*/
   // This is a conjunct of the inductive invariant, indicating that the messages carrying
   // decisions should reflect the votes of the participants as relayed to the coordinator
-  predicate DecisionMsgsAgreeWithDecision(c: Constants, v: Variables)
+  ghost predicate DecisionMsgsAgreeWithDecision(c: Constants, v: Variables)
     requires v.WF(c)
   {
 /*{*/
@@ -23,7 +23,7 @@ module TwoPCInvariantProof {
 /*}*/
   }
 
-  predicate Inv(c: Constants, v: Variables)
+  ghost predicate Inv(c: Constants, v: Variables)
   {
     && v.WF(c)
 /*{*/
@@ -57,4 +57,3 @@ module TwoPCInvariantProof {
   { // Trivial, as usual, since safety is a conjunct in Inv.
   }
 }
-

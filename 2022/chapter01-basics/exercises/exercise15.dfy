@@ -1,6 +1,6 @@
 //#title Maps. Set, Map and Sequence comprehensions.
 
-predicate IsEven(x:int)
+ghost predicate IsEven(x:int)
 {
   x/2*2==x
 }

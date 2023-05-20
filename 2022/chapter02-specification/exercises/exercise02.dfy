@@ -1,41 +1,57 @@
 //#title IsPrime II
 //#desc Working with an implementation proof
 
-// Take another little detour to implementation-land by writing a method
-// `test_prime` that implements IsPrime with an imperative while() loop.
+// Let's try "implementing" (with a recursive function) a check for
+// primeness.
 
 // The definition of IsPrime will be included from exercise01.dfy. Make sure
 // that definition is correct before you start implementing it.
 include "exercise01.dfy"
 //#extract exercise01.template solution exercise01.dfy
 
-// Convincing the proof to go through requires adding
-// a loop invariant and a triggering assert.
-method test_prime(candidate:nat) returns (result:bool)
-  requires 1<candidate
-  ensures result == IsPrime(candidate)
+// A recursive implementation of IsPrime. The function HasDivisorBelow should
+// check if n is divisible by something between 1 and limit (including limit,
+// not including 1).
+function
+  HasDivisorBelow(n:nat, limit:nat): bool
+  requires limit >= 1
 {
-/*{*/
-  // Fill in the body.
-/*}*/
+  if limit == 1 then false else
+  /*{*/
+    true // replace this with an appropriate definition
+  /*}*/
 }
 
-method PrimeMain()
-{
-  var isprime4 := test_prime(4);
-/*{*/
-/*}*/
-  assert !isprime4;
-  
-  var isprime12 := test_prime(12);
-/*{*/
-/*}*/
-  assert !isprime12;
-  
-  var isprime44 := test_prime(44);
-/*{*/
-/*}*/
-  assert !isprime44;
+function
+  IsPrime(n: nat): bool {
+  if n <= 1 then false else
+  !HasDivisorBelow(n, n-1)
 }
-  
 
+// You'll now prove IsPrime(n) == IsPrimeSpec(n). This will require a helper
+// lemma to deal with the recursion.
+
+// An intermediate spec for what HasDivisorBelow returns. The solution is expressed using an
+// exists; you may find it more natural to write a forall.
+lemma HasDivisorBelow_ok(n: nat, limit: nat)
+  requires 1 <= limit
+  /*{*/
+  ensures true // replace this with an appropriate postcondition
+  /*}*/
+{
+  /*{*/
+  /*}*/
+}
+
+lemma IsPrime_ok(n: nat)
+  ensures IsPrime(n) == IsPrimeSpec(n)
+{
+  /*{*/
+  // This proof should work if your postcondition for HasDivisorBelow_ok is
+  // correct, but you can change it if needed.
+  if n <= 2 {
+    return;
+  }
+  HasDivisorBelow_ok(n, n-1);
+  /*}*/
+}

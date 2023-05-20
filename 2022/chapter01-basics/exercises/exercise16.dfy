@@ -7,7 +7,7 @@
 // to its callers -- but we haven't ever called a lemma!
 // Calling lemmas is how we can compose proofs to prove larger concepts.
 
-predicate IsEven(x:int)
+ghost predicate IsEven(x:int)
 {
   x/2*2==x
 }
@@ -25,7 +25,7 @@ lemma ExplainEvenNumbers(x:int) returns (twocount:int)
   twocount := x / /*{*/3/*}*/;
 }
 
-predicate AlternateEven(x:int)
+ghost predicate AlternateEven(x:int)
 {
   exists twocount :: twocount * 2 == x
 }

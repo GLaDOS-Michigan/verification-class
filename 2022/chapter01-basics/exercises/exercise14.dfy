@@ -25,8 +25,9 @@ lemma TryThatCheeseOnASandwich()
   // To proceed, replace 'false' with 'true', and move on to the
   // next lemma to read about how to solve it.
   // If the '?' syntax is surprising, go re-read DirectionsLibrary.dfy.
-  assert (forall o1:Order :: o1.Appetizer?
-    ==> exists o2:Order :: o2.Sandwich? && o1.cheese == o2.cheese)
+  assert (forall o1:Order ::
+          o1.Appetizer?
+          ==> exists o2:Order :: o2.Sandwich? && o1.cheese == o2.cheese)
     || /*{*/ false /*}*/;
 }
 

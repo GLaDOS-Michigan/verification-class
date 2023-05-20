@@ -15,7 +15,7 @@ include "chapter03-exercise03.dfy"
 
 /*{*/
 /*}*/
-predicate Inv(c:Constants, v:Variables) {
+ghost predicate Inv(c:Constants, v:Variables) {
 /*{*/
   true  // Replace me: probably not strong enough. :v)
 /*}*/
